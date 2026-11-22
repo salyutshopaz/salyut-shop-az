@@ -1,0 +1,1050 @@
+
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090909">
+<title>Admin Panel | SALYUT SHOP AZ</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#090909;color:#fff;font-family:Arial,sans-serif}
+header{min-height:75px;padding:15px 5%;background:#111;border-bottom:1px solid #292929;display:flex;align-items:center;justify-content:space-between;gap:15px}
+.logo{color:#ff9000;font-weight:900;font-size:21px}
+.admin-label{color:#aaa;font-size:12px;margin-top:5px}
+.container{max-width:1450px;margin:35px auto;padding:0 20px}
+h1{font-size:29px;margin-bottom:8px}
+.subtitle{color:#888;font-size:14px;margin-bottom:25px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:25px}
+.stat{background:#151515;border:1px solid #292929;border-radius:14px;padding:22px}
+.stat span{color:#999;font-size:13px}
+.stat strong{display:block;font-size:26px;margin-top:12px;overflow-wrap:anywhere}
+.orange{color:#ff9800}.green{color:#45d483}.red{color:#ff6666}
+.tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.tab{background:#191919;border:1px solid #333;color:#bbb;padding:12px 18px;border-radius:9px;cursor:pointer;font-weight:700}
+.tab.active{background:#ff9000;color:#111;border-color:#ff9000}
+.section{display:none}
+.section.active{display:block}
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+select,input,textarea{background:#191919;border:1px solid #333;color:white;padding:12px 14px;border-radius:9px;outline:none;width:100%;font:inherit}
+textarea{resize:vertical;min-height:100px}
+.toolbar select{width:auto}
+.refresh{cursor:pointer;background:#ff9000;border:0;color:#111;font-weight:800;padding:12px 16px;border-radius:9px}
+.table-wrap{background:#131313;border:1px solid #292929;border-radius:15px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:800px}
+th,td{padding:16px 14px;text-align:left;border-bottom:1px solid #292929;font-size:13px}
+th{color:#ff9b19;background:#191919;font-size:12px}
+td{color:#ddd;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+.status{display:inline-block;padding:7px 10px;border-radius:20px;font-size:11px;font-weight:800;white-space:nowrap}
+.pending{color:#ffc15c;background:#39280e}
+.approved{color:#65e49b;background:#123522}
+.rejected{color:#ff8888;background:#3b1717}
+.processing{color:#80b9ff;background:#172d48}
+.shipped{color:#d3a3ff;background:#321b46}
+.completed{color:#65e49b;background:#123522}
+.cancelled{color:#ff8888;background:#3b1717}
+.actions{display:flex;gap:7px;flex-wrap:wrap}
+.action{border:0;padding:9px 11px;border-radius:7px;cursor:pointer;font-size:11px;font-weight:800}
+.receipt,.history{background:#303030;color:white}
+.approve,.add{background:#1c9c53;color:white}
+.reject,.subtract,.delete{background:#a93232;color:white}
+.edit{background:#315b9c;color:white}
+.action:disabled{opacity:.4;cursor:not-allowed}
+.empty,.loading,.error{padding:30px;text-align:center;color:#999}
+.error{color:#ff7777}
+.message{display:none;padding:14px;margin-bottom:18px;border-radius:9px;font-size:13px}
+.message.success{display:block;background:#123522;color:#72e5a0}
+.message.error{display:block;background:#3b1717;color:#ff8888}
+.logout{color:#ff7777;text-decoration:none;font-size:13px}
+.search{max-width:400px}
+.modal{display:none;position:fixed;inset:0;background:#000c;z-index:10;align-items:center;justify-content:center;padding:15px}
+.modal.open{display:flex}
+.modal-box{width:100%;max-width:520px;background:#171717;border:1px solid #333;border-radius:16px;padding:24px;max-height:90vh;overflow-y:auto}
+.modal-box h2{font-size:21px;margin-bottom:15px}
+.modal-box p{color:#aaa;font-size:13px;margin-bottom:15px}
+.field{margin:14px 0}
+.field label{display:block;color:#aaa;font-size:12px;margin-bottom:7px}
+.modal-actions{display:flex;gap:10px;margin-top:20px}
+.modal-actions button{flex:1}
+.cancel{background:#333;color:white}
+.primary{background:#ff9000;color:#111}
+.history-list{margin-top:15px}
+.history-item{background:#202020;border:1px solid #333;border-radius:10px;padding:13px;margin-bottom:10px;font-size:13px}
+.history-item p{margin-top:7px;margin-bottom:0}
+.product-image{width:55px;height:55px;object-fit:cover;border-radius:8px;background:#222}
+.add-product{background:#ff9000;color:#111;border:0;border-radius:9px;padding:12px 17px;font-weight:800;cursor:pointer}
+.preview{width:100%;max-height:180px;object-fit:contain;border-radius:10px;background:#222;margin-top:10px;display:none}
+.hint{font-size:11px;color:#888;margin-top:6px}
+.order-items{min-width:180px;max-width:260px;line-height:1.7;color:#bbb}
+.order-customer{min-width:150px;line-height:1.7}
+.order-address{min-width:180px;max-width:240px;line-height:1.7;color:#aaa}
+.order-total{font-weight:800;color:#ff9800;white-space:nowrap}
+.order-status-select{min-width:155px;margin-bottom:7px;padding:9px;font-size:12px}
+.order-save{background:#ff9000;color:#111}
+.order-date{white-space:nowrap;color:#aaa}
+@media(max-width:850px){.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){
+header{padding:15px}
+.container{margin-top:25px;padding:0 12px}
+h1{font-size:24px}
+.stats{grid-template-columns:1fr 1fr;gap:9px}
+.stat{padding:15px}
+.stat strong{font-size:21px}
+.tab{flex:1;padding:11px 8px;font-size:12px}
+.toolbar>*{width:100%!important;max-width:none}
+}
+</style>
+</head>
+
+<body>
+<header>
+<div>
+<div class="logo">SALYUT SHOP AZ</div>
+<div class="admin-label">İdarəetmə paneli</div>
+</div>
+<a href="/profile.html" class="logout">Profilə qayıt →</a>
+</header>
+
+<main class="container">
+<h1>Admin paneli</h1>
+<p class="subtitle">Mağazanın və müştərilərin idarə edilməsi</p>
+
+<div id="message" class="message"></div>
+
+<div class="stats">
+<div class="stat"><span>Bütün müştərilər</span><strong id="totalUsers">0</strong></div>
+<div class="stat"><span>Ümumi müştəri balansı</span><strong class="orange" id="totalBalance">0.00 AZN</strong></div>
+<div class="stat"><span>Gözləyən depozitlər</span><strong class="orange" id="pendingCount">0</strong></div>
+<div class="stat"><span>Təsdiqlənən depozitlər</span><strong class="green" id="approvedCount">0</strong></div>
+</div>
+
+<div class="tabs">
+<button class="tab active" data-tab="deposits">Depozitlər</button>
+<button class="tab" data-tab="customers">Müştərilər</button>
+<button class="tab" data-tab="products">Məhsullar</button>
+<button class="tab" data-tab="orders">Sifarişlər</button>
+</div>
+
+<!-- DEPOZİTLƏR -->
+<div id="depositsSection" class="section active">
+<div class="toolbar">
+<select id="statusFilter">
+<option value="all">Bütün sorğular</option>
+<option value="pending">Gözləyənlər</option>
+<option value="approved">Təsdiqlənənlər</option>
+<option value="rejected">Rədd edilənlər</option>
+</select>
+<button class="refresh" id="refreshDeposits">↻ Yenilə</button>
+</div>
+
+<div class="table-wrap">
+<table>
+<thead><tr><th>ID</th><th>Müştəri</th><th>Məbləğ</th><th>Tarix</th><th>Status</th><th>Əməliyyatlar</th></tr></thead>
+<tbody id="depositTable"><tr><td colspan="6" class="loading">Yüklənir...</td></tr></tbody>
+</table>
+</div>
+</div>
+
+<!-- MÜŞTƏRİLƏR -->
+<div id="customersSection" class="section">
+<div class="toolbar">
+<input class="search" id="customerSearch" placeholder="Ad və ya e-poçt ilə axtar...">
+<button class="refresh" id="refreshCustomers">↻ Yenilə</button>
+</div>
+
+<div class="table-wrap">
+<table>
+<thead><tr><th>ID</th><th>Müştəri</th><th>Telefon</th><th>Şəhər</th><th>Balans</th><th>Əməliyyatlar</th></tr></thead>
+<tbody id="customerTable"><tr><td colspan="6" class="loading">Yüklənir...</td></tr></tbody>
+</table>
+</div>
+</div>
+
+<!-- MƏHSULLAR -->
+<div id="productsSection" class="section">
+<div class="toolbar">
+<input class="search" id="productSearch" placeholder="Məhsul axtar...">
+<button class="add-product" id="addProductBtn">+ Yeni məhsul</button>
+<button class="refresh" id="refreshProducts">↻ Yenilə</button>
+</div>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Şəkil</th>
+<th>ID</th>
+<th>Məhsul adı</th>
+<th>Kateqoriya</th>
+<th>Qiymət</th>
+<th>Köhnə qiymət</th>
+<th>Əməliyyatlar</th>
+</tr>
+</thead>
+<tbody id="productTable">
+<tr><td colspan="7" class="loading">Məhsullar yüklənir...</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- SİFARİŞLƏR -->
+<div id="ordersSection" class="section">
+<div class="toolbar">
+<select id="orderStatusFilter">
+<option value="all">Bütün sifarişlər</option>
+<option value="pending">Yeni</option>
+<option value="processing">Hazırlanır</option>
+<option value="shipped">Yola göndərildi</option>
+<option value="completed">Çatdırıldı</option>
+<option value="cancelled">Ləğv edildi</option>
+</select>
+<button class="refresh" id="refreshOrders">↻ Sifarişləri yenilə</button>
+</div>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Sifariş</th>
+<th>Müştəri</th>
+<th>Çatdırılma ünvanı</th>
+<th>Məhsullar</th>
+<th>Ümumi məbləğ</th>
+<th>Tarix</th>
+<th>Status və idarəetmə</th>
+</tr>
+</thead>
+<tbody id="orderTable">
+<tr><td colspan="7" class="loading">Sifarişlər yüklənir...</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+</main>
+
+<!-- BALANS MODALI -->
+<div class="modal" id="balanceModal">
+<div class="modal-box">
+<h2 id="balanceTitle">Balans idarəetməsi</h2>
+<p id="balanceCustomer"></p>
+<div class="field">
+<label>Məbləğ (AZN)</label>
+<input id="balanceAmount" type="number" min="0.01" max="1000000" step="0.01" placeholder="Məsələn: 10">
+</div>
+<div class="field">
+<label>Qeyd (məcburi deyil)</label>
+<input id="balanceNote" maxlength="300" placeholder="Əməliyyat haqqında qeyd">
+</div>
+<div class="modal-actions">
+<button class="action cancel" id="closeBalance">Bağla</button>
+<button class="action primary" id="saveBalance">Təsdiqlə</button>
+</div>
+</div>
+</div>
+
+<!-- TARİXÇƏ MODALI -->
+<div class="modal" id="historyModal">
+<div class="modal-box">
+<h2>Balans tarixçəsi</h2>
+<p id="historyCustomer"></p>
+<div class="history-list" id="historyList">Yüklənir...</div>
+<div class="modal-actions"><button class="action cancel" id="closeHistory">Bağla</button></div>
+</div>
+</div>
+
+<!-- MƏHSUL MODALI -->
+<div class="modal" id="productModal">
+<div class="modal-box">
+<h2 id="productModalTitle">Yeni məhsul əlavə et</h2>
+
+<form id="productForm">
+<div class="field">
+<label>Məhsulun adı *</label>
+<input name="title" id="productTitle" maxlength="200" required placeholder="Məhsulun adını yazın">
+</div>
+
+<div class="field">
+<label>Kateqoriya</label>
+<input name="category" id="productCategory" maxlength="100" placeholder="Məsələn: Aksesuarlar">
+</div>
+
+<div class="field">
+<label>Qiymət (AZN) *</label>
+<input name="price" id="productPrice" type="number" min="0" step="0.01" required placeholder="Məsələn: 25">
+</div>
+
+<div class="field">
+<label>Köhnə qiymət (AZN)</label>
+<input name="old_price" id="productOldPrice" type="number" min="0" step="0.01" placeholder="Məsələn: 35">
+</div>
+
+<div class="field">
+<label>Məhsul haqqında məlumat</label>
+<textarea name="description" id="productDescription" maxlength="5000" placeholder="Məhsulun açıqlamasını yazın..."></textarea>
+</div>
+
+<div class="field">
+<label>Məhsul şəkli</label>
+<input type="file" name="image" id="productImage" accept="image/jpeg,image/png,image/webp">
+<div class="hint">JPG, PNG və WEBP. Maksimum 5 MB.</div>
+<img id="imagePreview" class="preview" alt="Məhsul şəkli">
+</div>
+
+<div class="modal-actions">
+<button type="button" class="action cancel" id="closeProduct">Bağla</button>
+<button type="submit" class="action primary" id="saveProduct">Yadda saxla</button>
+</div>
+</form>
+</div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const message = $("message");
+const depositTable = $("depositTable");
+const customerTable = $("customerTable");
+const productTable = $("productTable");
+const orderTable = $("orderTable");
+
+let deposits = [];
+let customers = [];
+let products = [];
+let orders = [];
+let selectedCustomer = null;
+let selectedAction = "add";
+let editingProductId = null;
+let searchTimer = null;
+let productSearchTimer = null;
+let previewUrl = null;
+
+function escapeHTML(value) {
+return String(value ?? "").replace(/[&<>"']/g, c => ({
+"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+})[c]);
+}
+
+function formatAmount(value) {
+const n = Number(value);
+return (Number.isFinite(n) ? n : 0).toFixed(2) + " AZN";
+}
+
+function formatDate(value) {
+const date = new Date(value);
+return Number.isNaN(date.getTime()) ? "—" : date.toLocaleString("az-AZ");
+}
+
+function showMessage(text, type = "success") {
+message.textContent = text;
+message.className = "message " + type;
+window.scrollTo({top:0,behavior:"smooth"});
+}
+
+async function api(url, options = {}) {
+const response = await fetch(url, {
+credentials:"same-origin",
+...options,
+headers:{
+...(options.body instanceof FormData ? {} : {"Content-Type":"application/json"}),
+...(options.headers || {})
+}
+});
+
+const data = await response.json().catch(() => ({}));
+
+if (response.status === 401 || response.status === 403) {
+throw new Error("Admin hesabı ilə daxil olun. Bu səhifəyə icazəniz yoxdur.");
+}
+
+if (!response.ok || data.success === false) {
+throw new Error(data.message || "Əməliyyat zamanı xəta baş verdi.");
+}
+
+return data;
+}
+
+// TABLAR
+document.querySelectorAll(".tab").forEach(button => {
+button.addEventListener("click", () => {
+document.querySelectorAll(".tab").forEach(b => b.classList.remove("active"));
+document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+
+button.classList.add("active");
+$(button.dataset.tab + "Section").classList.add("active");
+
+if (button.dataset.tab === "customers") loadCustomers();
+if (button.dataset.tab === "deposits") loadDeposits();
+if (button.dataset.tab === "products") loadProducts();
+if (button.dataset.tab === "orders") loadOrders();
+});
+});
+
+// STATİSTİKA
+async function loadStats() {
+try {
+const data = await api("/api/admin/stats");
+const stats = data.stats;
+
+$("totalUsers").textContent = stats.total_users || 0;
+$("totalBalance").textContent = formatAmount(stats.total_balance);
+$("pendingCount").textContent = stats.pending_deposits || 0;
+$("approvedCount").textContent = stats.approved_deposits || 0;
+} catch (error) {
+showMessage(error.message, "error");
+}
+}
+
+// DEPOZİTLƏR
+function statusHTML(status) {
+const labels = {
+pending:"Gözləyir",
+approved:"Təsdiqlənib",
+rejected:"Rədd edilib"
+};
+return `<span class="status ${escapeHTML(status)}">${labels[status] || "Naməlum"}</span>`;
+}
+
+function renderDeposits() {
+const selected = $("statusFilter").value;
+const filtered = selected === "all" ? deposits : deposits.filter(item => item.status === selected);
+
+if (!filtered.length) {
+depositTable.innerHTML = `<tr><td colspan="6" class="empty">Depozit sorğusu yoxdur.</td></tr>`;
+return;
+}
+
+depositTable.innerHTML = filtered.map(item => `
+<tr>
+<td>#${Number(item.id)}</td>
+<td><strong>${escapeHTML(item.name)}</strong><br><small style="color:#888">${escapeHTML(item.email)}</small></td>
+<td class="orange"><strong>${formatAmount(item.amount)}</strong></td>
+<td>${formatDate(item.created_at)}</td>
+<td>${statusHTML(item.status)}</td>
+<td><div class="actions">
+<button class="action receipt" data-deposit-action="receipt" data-id="${Number(item.id)}">Qəbz</button>
+<button class="action approve" data-deposit-action="approve" data-id="${Number(item.id)}" ${item.status !== "pending" ? "disabled" : ""}>Təsdiqlə</button>
+<button class="action reject" data-deposit-action="reject" data-id="${Number(item.id)}" ${item.status !== "pending" ? "disabled" : ""}>Rədd et</button>
+</div></td>
+</tr>
+`).join("");
+}
+
+async function loadDeposits() {
+depositTable.innerHTML = `<tr><td colspan="6" class="loading">Yüklənir...</td></tr>`;
+
+try {
+const data = await api("/api/admin/deposits");
+deposits = Array.isArray(data.deposits) ? data.deposits : [];
+renderDeposits();
+await loadStats();
+} catch (error) {
+depositTable.innerHTML = `<tr><td colspan="6" class="error">${escapeHTML(error.message)}</td></tr>`;
+}
+}
+
+async function reviewDeposit(id, status) {
+const question = status === "approved"
+? "Bu depoziti təsdiqləmək istəyirsiniz?"
+: "Bu depoziti rədd etmək istəyirsiniz?";
+
+if (!confirm(question)) return;
+
+try {
+const data = await api(`/api/admin/deposits/${id}`, {
+method:"PATCH",
+body:JSON.stringify({status})
+});
+
+showMessage(data.message);
+await loadDeposits();
+} catch (error) {
+showMessage(error.message, "error");
+}
+}
+
+depositTable.addEventListener("click", event => {
+const button = event.target.closest("button[data-deposit-action]");
+if (!button || button.disabled) return;
+
+const id = button.dataset.id;
+const action = button.dataset.depositAction;
+
+if (action === "receipt") {
+window.open(`/api/admin/deposits/${id}/receipt`, "_blank", "noopener");
+}
+if (action === "approve") reviewDeposit(id, "approved");
+if (action === "reject") reviewDeposit(id, "rejected");
+});
+
+// MÜŞTƏRİLƏR
+function renderCustomers() {
+if (!customers.length) {
+customerTable.innerHTML = `<tr><td colspan="6" class="empty">Müştəri tapılmadı.</td></tr>`;
+return;
+}
+
+customerTable.innerHTML = customers.map(user => `
+<tr>
+<td>#${Number(user.id)}</td>
+<td><strong>${escapeHTML(user.name)}</strong><br><small style="color:#888">${escapeHTML(user.email)}</small></td>
+<td>${escapeHTML(user.phone || "—")}</td>
+<td>${escapeHTML(user.city || "—")}</td>
+<td class="orange"><strong>${formatAmount(user.balance)}</strong></td>
+<td><div class="actions">
+<button class="action add" data-customer-action="add" data-id="${Number(user.id)}">Balans artır</button>
+<button class="action subtract" data-customer-action="subtract" data-id="${Number(user.id)}">Balans azalt</button>
+<button class="action history" data-customer-action="history" data-id="${Number(user.id)}">Tarixçə</button>
+</div></td>
+</tr>
+`).join("");
+}
+
+async function loadCustomers(search = "") {
+customerTable.innerHTML = `<tr><td colspan="6" class="loading">Müştərilər yüklənir...</td></tr>`;
+
+try {
+const data = await api("/api/admin/users?search=" + encodeURIComponent(search));
+customers = Array.isArray(data.users) ? data.users : [];
+renderCustomers();
+} catch (error) {
+customerTable.innerHTML = `<tr><td colspan="6" class="error">${escapeHTML(error.message)}</td></tr>`;
+}
+}
+
+$("customerSearch").addEventListener("input", () => {
+clearTimeout(searchTimer);
+searchTimer = setTimeout(() => loadCustomers($("customerSearch").value.trim()), 300);
+});
+
+customerTable.addEventListener("click", event => {
+const button = event.target.closest("button[data-customer-action]");
+if (!button) return;
+
+const user = customers.find(item => Number(item.id) === Number(button.dataset.id));
+if (!user) return;
+
+if (button.dataset.customerAction === "add") openBalanceModal(user, "add");
+if (button.dataset.customerAction === "subtract") openBalanceModal(user, "subtract");
+if (button.dataset.customerAction === "history") openHistory(user);
+});
+
+// BALANS MODALI
+function openBalanceModal(user, action) {
+selectedCustomer = user;
+selectedAction = action;
+
+$("balanceTitle").textContent = action === "add"
+? "Müştərinin balansını artır"
+: "Müştərinin balansını azalt";
+
+$("balanceCustomer").textContent =
+user.name + " — " + user.email + " | Cari balans: " + formatAmount(user.balance);
+
+$("balanceAmount").value = "";
+$("balanceNote").value = "";
+$("balanceModal").classList.add("open");
+}
+
+$("closeBalance").addEventListener("click", () => {
+$("balanceModal").classList.remove("open");
+});
+
+$("saveBalance").addEventListener("click", async () => {
+if (!selectedCustomer) return;
+
+const amount = $("balanceAmount").value.trim();
+const note = $("balanceNote").value.trim();
+
+if (!/^\d{1,10}(\.\d{1,2})?$/.test(amount) || Number(amount) <= 0 || Number(amount) > 1000000) {
+showMessage("Düzgün məbləğ daxil edin. Maksimum 1 000 000 AZN.", "error");
+return;
+}
+
+const button = $("saveBalance");
+button.disabled = true;
+button.textContent = "Gözləyin...";
+
+try {
+const data = await api(`/api/admin/users/${selectedCustomer.id}/balance`, {
+method:"PATCH",
+body:JSON.stringify({action:selectedAction,amount,note})
+});
+
+$("balanceModal").classList.remove("open");
+showMessage(data.message);
+
+await loadCustomers($("customerSearch").value.trim());
+await loadStats();
+
+} catch (error) {
+showMessage(error.message, "error");
+} finally {
+button.disabled = false;
+button.textContent = "Təsdiqlə";
+}
+});
+
+// BALANS TARİXÇƏSİ
+async function openHistory(user) {
+$("historyCustomer").textContent = user.name + " — " + user.email;
+$("historyList").textContent = "Tarixçə yüklənir...";
+$("historyModal").classList.add("open");
+
+try {
+const data = await api(`/api/admin/users/${user.id}/history`);
+const history = Array.isArray(data.history) ? data.history : [];
+
+if (!history.length) {
+$("historyList").innerHTML = `<div class="empty">Balans dəyişiklikləri tarixçəsi yoxdur.</div>`;
+return;
+}
+
+$("historyList").innerHTML = history.map(item => {
+const added = item.action === "add";
+
+return `<div class="history-item">
+<strong class="${added ? "green" : "red"}">${added ? "+" : "-"}${formatAmount(item.amount)}</strong>
+<p>Əvvəlki balans: ${formatAmount(item.balance_before)}</p>
+<p>Yeni balans: ${formatAmount(item.balance_after)}</p>
+<p>Admin: ${escapeHTML(item.admin_email)}</p>
+<p>Qeyd: ${escapeHTML(item.note || "—")}</p>
+<p>Tarix: ${formatDate(item.created_at)}</p>
+</div>`;
+}).join("");
+
+} catch (error) {
+$("historyList").textContent = error.message;
+}
+}
+
+$("closeHistory").addEventListener("click", () => {
+$("historyModal").classList.remove("open");
+});
+
+// MƏHSULLAR
+function safeImage(url) {
+const value = String(url || "");
+return value.startsWith("/uploads/products/") ? value : "";
+}
+
+function renderProducts() {
+const search = $("productSearch").value.trim().toLowerCase();
+
+const filtered = products.filter(item =>
+String(item.title || "").toLowerCase().includes(search) ||
+String(item.category || "").toLowerCase().includes(search)
+);
+
+if (!filtered.length) {
+productTable.innerHTML = `<tr><td colspan="7" class="empty">Məhsul tapılmadı. Yeni məhsul əlavə edə bilərsiniz.</td></tr>`;
+return;
+}
+
+productTable.innerHTML = filtered.map(item => {
+const image = safeImage(item.image);
+
+return `<tr>
+<td>${image ? `<img class="product-image" src="${escapeHTML(image)}" alt="">` : `<div class="product-image"></div>`}</td>
+<td>#${Number(item.id)}</td>
+<td><strong>${escapeHTML(item.title)}</strong></td>
+<td>${escapeHTML(item.category || "—")}</td>
+<td class="orange"><strong>${formatAmount(item.price)}</strong></td>
+<td>${item.old_price !== null && item.old_price !== "" ? formatAmount(item.old_price) : "—"}</td>
+<td><div class="actions">
+<button class="action edit" data-product-action="edit" data-id="${Number(item.id)}">Redaktə</button>
+<button class="action delete" data-product-action="delete" data-id="${Number(item.id)}">Sil</button>
+</div></td>
+</tr>`;
+}).join("");
+}
+
+async function loadProducts() {
+productTable.innerHTML = `<tr><td colspan="7" class="loading">Məhsullar yüklənir...</td></tr>`;
+
+try {
+const data = await api("/api/admin/products");
+products = Array.isArray(data.products) ? data.products : [];
+renderProducts();
+} catch (error) {
+productTable.innerHTML = `<tr><td colspan="7" class="error">${escapeHTML(error.message)}</td></tr>`;
+}
+}
+
+function resetProductForm() {
+$("productForm").reset();
+$("imagePreview").style.display = "none";
+$("imagePreview").removeAttribute("src");
+
+if (previewUrl) {
+URL.revokeObjectURL(previewUrl);
+previewUrl = null;
+}
+}
+
+function openNewProduct() {
+editingProductId = null;
+resetProductForm();
+$("productModalTitle").textContent = "Yeni məhsul əlavə et";
+$("saveProduct").textContent = "Məhsulu əlavə et";
+$("productModal").classList.add("open");
+}
+
+function openEditProduct(product) {
+editingProductId = product.id;
+resetProductForm();
+
+$("productTitle").value = product.title || "";
+$("productCategory").value = product.category || "";
+$("productPrice").value = product.price ?? "";
+$("productOldPrice").value = product.old_price ?? "";
+$("productDescription").value = product.description || "";
+
+const image = safeImage(product.image);
+if (image) {
+$("imagePreview").src = image;
+$("imagePreview").style.display = "block";
+}
+
+$("productModalTitle").textContent = "Məhsulu redaktə et";
+$("saveProduct").textContent = "Dəyişiklikləri yadda saxla";
+$("productModal").classList.add("open");
+}
+
+$("addProductBtn").addEventListener("click", openNewProduct);
+
+$("closeProduct").addEventListener("click", () => {
+$("productModal").classList.remove("open");
+resetProductForm();
+});
+
+$("productImage").addEventListener("change", () => {
+const file = $("productImage").files[0];
+
+if (previewUrl) {
+URL.revokeObjectURL(previewUrl);
+previewUrl = null;
+}
+
+if (!file) return;
+
+const allowed = ["image/jpeg","image/png","image/webp"];
+
+if (!allowed.includes(file.type)) {
+showMessage("Yalnız JPG, PNG və WEBP şəkilləri qəbul edilir.", "error");
+$("productImage").value = "";
+return;
+}
+
+if (file.size > 5 * 1024 * 1024) {
+showMessage("Şəklin ölçüsü maksimum 5 MB olmalıdır.", "error");
+$("productImage").value = "";
+return;
+}
+
+previewUrl = URL.createObjectURL(file);
+$("imagePreview").src = previewUrl;
+$("imagePreview").style.display = "block";
+});
+
+$("productForm").addEventListener("submit", async event => {
+event.preventDefault();
+
+const title = $("productTitle").value.trim();
+const price = $("productPrice").value;
+const oldPrice = $("productOldPrice").value;
+
+if (!title) {
+showMessage("Məhsulun adını daxil edin.", "error");
+return;
+}
+
+if (price === "" || !Number.isFinite(Number(price)) || Number(price) < 0) {
+showMessage("Düzgün məhsul qiyməti daxil edin.", "error");
+return;
+}
+
+if (oldPrice !== "" && (!Number.isFinite(Number(oldPrice)) || Number(oldPrice) < 0)) {
+showMessage("Köhnə qiyməti düzgün daxil edin.", "error");
+return;
+}
+
+const file = $("productImage").files[0];
+
+if (file) {
+if (!["image/jpeg","image/png","image/webp"].includes(file.type)) {
+showMessage("Yalnız JPG, PNG və WEBP şəkilləri qəbul edilir.", "error");
+return;
+}
+if (file.size > 5 * 1024 * 1024) {
+showMessage("Şəklin ölçüsü maksimum 5 MB olmalıdır.", "error");
+return;
+}
+}
+
+const button = $("saveProduct");
+button.disabled = true;
+button.textContent = "Yadda saxlanılır...";
+
+try {
+const formData = new FormData($("productForm"));
+
+const url = editingProductId
+? `/api/admin/products/${editingProductId}`
+: "/api/admin/products";
+
+const data = await api(url, {
+method:editingProductId ? "PUT" : "POST",
+body:formData
+});
+
+$("productModal").classList.remove("open");
+resetProductForm();
+
+showMessage(data.message || "Məhsul yadda saxlanıldı.");
+await loadProducts();
+
+} catch (error) {
+showMessage(error.message, "error");
+} finally {
+button.disabled = false;
+button.textContent = editingProductId ? "Dəyişiklikləri yadda saxla" : "Məhsulu əlavə et";
+}
+});
+
+productTable.addEventListener("click", event => {
+const button = event.target.closest("button[data-product-action]");
+if (!button) return;
+
+const id = Number(button.dataset.id);
+const product = products.find(item => Number(item.id) === id);
+if (!product) return;
+
+if (button.dataset.productAction === "edit") {
+openEditProduct(product);
+}
+
+if (button.dataset.productAction === "delete") {
+if (!confirm(`"${product.title}" məhsulunu silmək istəyirsiniz?`)) return;
+deleteProduct(id);
+}
+});
+
+async function deleteProduct(id) {
+try {
+const data = await api(`/api/admin/products/${id}`, {
+method:"DELETE"
+});
+
+showMessage(data.message || "Məhsul silindi.");
+await loadProducts();
+
+} catch (error) {
+showMessage(error.message, "error");
+}
+}
+
+$("productSearch").addEventListener("input", () => {
+clearTimeout(productSearchTimer);
+productSearchTimer = setTimeout(renderProducts, 200);
+});
+
+// ==================================================
+// SİFARİŞLƏR
+// ==================================================
+
+const orderStatusLabels = {
+pending:"Yeni",
+processing:"Hazırlanır",
+shipped:"Yola göndərildi",
+completed:"Çatdırıldı",
+cancelled:"Ləğv edildi"
+};
+
+function orderStatusHTML(status) {
+const label = orderStatusLabels[status] || "Naməlum";
+return `<span class="status ${escapeHTML(status)}">${label}</span>`;
+}
+
+function renderOrders() {
+const selected = $("orderStatusFilter").value;
+
+const filtered = selected === "all"
+? orders
+: orders.filter(order => order.status === selected);
+
+if (!filtered.length) {
+orderTable.innerHTML = `<tr><td colspan="7" class="empty">Bu statusda sifariş yoxdur.</td></tr>`;
+return;
+}
+
+orderTable.innerHTML = filtered.map(order => {
+const items = Array.isArray(order.items) ? order.items : [];
+
+const itemsHTML = items.map(item => `
+<div>
+${escapeHTML(item.title)}
+<br>
+<small style="color:#888">
+${Number(item.quantity)} ədəd × ${formatAmount(item.price)}
+</small>
+</div>
+`).join("<hr style='border:0;border-top:1px solid #333;margin:7px 0'>");
+
+const statusOptions = Object.entries(orderStatusLabels).map(([value, label]) => `
+<option value="${value}" ${order.status === value ? "selected" : ""}>${label}</option>
+`).join("");
+
+return `
+<tr>
+<td>
+<strong class="orange">#${Number(order.id)}</strong>
+<br>
+<small style="color:#888">Müştəri ID: ${Number(order.user_id)}</small>
+</td>
+
+<td>
+<div class="order-customer">
+<strong>${escapeHTML(order.customer_name)}</strong>
+<br>
+${escapeHTML(order.email || "")}
+<br>
+${escapeHTML(order.phone)}
+</div>
+</td>
+
+<td>
+<div class="order-address">
+${escapeHTML(order.city)}
+${order.settlement ? ", " + escapeHTML(order.settlement) : ""}
+${order.postal_code ? "<br>Poçt indeksi: " + escapeHTML(order.postal_code) : ""}
+<br>
+${escapeHTML(order.address)}
+</div>
+</td>
+
+<td>
+<div class="order-items">
+${itemsHTML || "Məhsul məlumatı yoxdur"}
+</div>
+</td>
+
+<td>
+<div class="order-total">${formatAmount(order.total)}</div>
+</td>
+
+<td>
+<div class="order-date">${formatDate(order.created_at)}</div>
+</td>
+
+<td>
+${orderStatusHTML(order.status)}
+<select class="order-status-select" data-order-status="${Number(order.id)}">
+${statusOptions}
+</select>
+<button
+class="action order-save"
+data-order-save="${Number(order.id)}">
+Yadda saxla
+</button>
+</td>
+</tr>
+`;
+}).join("");
+}
+
+async function loadOrders() {
+orderTable.innerHTML = `<tr><td colspan="7" class="loading">Sifarişlər yüklənir...</td></tr>`;
+
+try {
+const data = await api("/api/admin/orders");
+
+orders = Array.isArray(data.orders) ? data.orders : [];
+
+renderOrders();
+
+} catch (error) {
+orderTable.innerHTML = `<tr><td colspan="7" class="error">${escapeHTML(error.message)}</td></tr>`;
+}
+}
+
+async function updateOrderStatus(id, status, button) {
+if (!orderStatusLabels[status]) {
+showMessage("Sifariş statusu düzgün deyil.", "error");
+return;
+}
+
+const order = orders.find(item => Number(item.id) === Number(id));
+
+if (!order) {
+showMessage("Sifariş tapılmadı.", "error");
+return;
+}
+
+if (order.status === status) {
+showMessage("Sifariş artıq bu statusdadır.", "error");
+return;
+}
+
+const question = `#${id} nömrəli sifarişin statusunu "${orderStatusLabels[status]}" etmək istəyirsiniz?`;
+
+if (!confirm(question)) return;
+
+button.disabled = true;
+button.textContent = "Yadda saxlanılır...";
+
+try {
+const data = await api(`/api/admin/orders/${id}`, {
+method:"PATCH",
+body:JSON.stringify({status})
+});
+
+showMessage(data.message || "Sifariş statusu yeniləndi!");
+
+await loadOrders();
+
+} catch (error) {
+showMessage(error.message, "error");
+button.disabled = false;
+button.textContent = "Yadda saxla";
+}
+}
+
+orderTable.addEventListener("click", event => {
+const button = event.target.closest("button[data-order-save]");
+
+if (!button) return;
+
+const id = Number(button.dataset.orderSave);
+const select = orderTable.querySelector(`select[data-order-status="${id}"]`);
+
+if (!select) return;
+
+updateOrderStatus(id, select.value, button);
+});
+
+$("orderStatusFilter").addEventListener("change", renderOrders);
+$("refreshOrders").addEventListener("click", loadOrders);
+
+// ==================================================
+// YENİLƏMƏ DÜYMƏLƏRİ
+// ==================================================
+
+$("refreshDeposits").addEventListener("click", loadDeposits);
+
+$("refreshCustomers").addEventListener("click", () =>
+loadCustomers($("customerSearch").value.trim())
+);
+
+$("refreshProducts").addEventListener("click", loadProducts);
+
+$("statusFilter").addEventListener("change", renderDeposits);
+
+// BAŞLANĞIC
+loadStats();
+loadDeposits();
+</script>
+</body>
+</html>

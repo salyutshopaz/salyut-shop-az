@@ -1,0 +1,214 @@
+
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qeydiyyat | SALYUT SHOP AZ</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .register-container {
+            width: 90%;
+            max-width: 430px;
+            margin: 65px auto;
+            padding: 35px;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            box-shadow: 0 5px 25px #0000000d;
+        }
+
+        .register-container h1 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .register-container .subtitle {
+            text-align: center;
+            color: #777;
+            margin-bottom: 30px;
+        }
+
+        .register-container label {
+            display: block;
+            margin: 15px 0 7px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .register-container input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ddd;
+            border-radius: 7px;
+            outline: none;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+
+        .register-container input:focus {
+            border-color: #111;
+        }
+
+        .register-container button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 25px;
+            background: #111;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .register-container button:hover {
+            background: #333;
+        }
+
+        .register-container button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 22px;
+            font-size: 14px;
+        }
+
+        .login-link a {
+            color: #111;
+            font-weight: bold;
+        }
+
+        #message {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+    <div class="logo">
+        SALYUT <span>SHOP AZ</span>
+    </div>
+    <a href="/" style="color:#111;text-decoration:none">Ana səhifə</a>
+</header>
+
+<main class="register-container">
+
+    <h1>Qeydiyyat</h1>
+    <p class="subtitle">Yeni hesabını yarat</p>
+
+    <form id="registerForm">
+
+        <label for="name">Ad və soyad</label>
+        <input type="text" id="name" placeholder="Ad və soyad" maxlength="100" required>
+
+        <label for="email">E-poçt</label>
+        <input type="email" id="email" placeholder="example@gmail.com" required>
+
+        <label for="password">Şifrə</label>
+        <input type="password" id="password" placeholder="Ən azı 8 simvol" minlength="8" required>
+
+        <label for="confirmPassword">Şifrəni təkrar yaz</label>
+        <input type="password" id="confirmPassword" placeholder="Şifrəni təkrar yaz" required>
+
+        <button type="submit" id="registerButton">
+            Qeydiyyatdan keç
+        </button>
+
+        <p id="message"></p>
+
+    </form>
+
+    <p class="login-link">
+        Artıq hesabın var?
+        <a href="/login.html">Giriş et</a>
+    </p>
+
+</main>
+
+<footer>
+    © 2026 SALYUT SHOP AZ
+</footer>
+
+<script>
+document.getElementById("registerForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+
+    const button = document.getElementById("registerButton");
+    const message = document.getElementById("message");
+
+    message.style.color = "#b00020";
+    message.textContent = "";
+
+    if (password !== confirmPassword) {
+        message.textContent = "Şifrələr eyni deyil!";
+        return;
+    }
+
+    if (password.length < 8) {
+        message.textContent = "Şifrə ən azı 8 simvol olmalıdır!";
+        return;
+    }
+
+    button.disabled = true;
+    button.textContent = "Gözlə...";
+
+    try {
+        const response = await fetch("/api/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                name,
+                email,
+                password
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            message.style.color = "#b00020";
+            message.textContent = data.message || "Qeydiyyat alınmadı.";
+            return;
+        }
+
+        message.style.color = "green";
+        message.textContent = "Qeydiyyat uğurludur!";
+
+        setTimeout(() => {
+            window.location.href = "/";
+        }, 1000);
+
+    } catch (error) {
+        message.style.color = "#b00020";
+        message.textContent = "Serverlə əlaqə yaratmaq mümkün olmadı.";
+    } finally {
+        button.disabled = false;
+        button.textContent = "Qeydiyyatdan keç";
+    }
+});
+</script>
+
+</body>
+</html>
