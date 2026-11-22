@@ -1,0 +1,6 @@
+.env
+.env.*
+!.env.example
+node_modules/
+private_uploads/
+uploads/

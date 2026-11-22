@@ -1,0 +1,796 @@
+
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Şəxsi kabinet | SALYUT SHOP AZ</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: #f3f4f6;
+    color: #171717;
+}
+
+header {
+    height: 76px;
+    background: #111;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 7%;
+    box-shadow: 0 4px 20px rgba(0,0,0,.12);
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+}
+
+.logo span {
+    color: #ff9f43;
+}
+
+.header-link {
+    color: white;
+    text-decoration: none;
+    padding: 11px 19px;
+    border: 1px solid #444;
+    border-radius: 9px;
+    transition: .3s;
+}
+
+.header-link:hover {
+    background: #ff9f43;
+    color: #111;
+}
+
+.container {
+    max-width: 1050px;
+    margin: 45px auto;
+    padding: 0 20px;
+}
+
+.page-title {
+    margin-bottom: 28px;
+}
+
+.page-title h1 {
+    font-size: 32px;
+    font-weight: 800;
+}
+
+.page-title p {
+    color: #777;
+    margin-top: 7px;
+}
+
+.profile-hero {
+    background: linear-gradient(120deg, #171717, #303030);
+    color: white;
+    padding: 35px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 12px 35px rgba(0,0,0,.13);
+}
+
+.profile-hero::after {
+    content: "";
+    position: absolute;
+    width: 260px;
+    height: 260px;
+    border: 45px solid rgba(255,159,67,.10);
+    border-radius: 50%;
+    right: -60px;
+    top: -100px;
+}
+
+.avatar {
+    width: 105px;
+    height: 105px;
+    min-width: 105px;
+    border-radius: 50%;
+    background: linear-gradient(135deg,#ff9f43,#ffbd69);
+    color: #171717;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 38px;
+    font-weight: 900;
+    border: 5px solid rgba(255,255,255,.18);
+    position: relative;
+    z-index: 1;
+}
+
+.profile-text {
+    position: relative;
+    z-index: 1;
+}
+
+.profile-text h2 {
+    font-size: 27px;
+    margin-bottom: 8px;
+}
+
+.profile-text p {
+    color: #c8c8c8;
+    font-size: 14px;
+}
+
+.status {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 15px;
+    padding: 7px 13px;
+    background: rgba(44,190,112,.15);
+    color: #63e6a0;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #35d481;
+}
+
+.content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+    margin-top: 25px;
+}
+
+.card {
+    background: white;
+    border-radius: 17px;
+    padding: 27px;
+    box-shadow: 0 5px 25px rgba(0,0,0,.045);
+    border: 1px solid #ededed;
+}
+
+.card-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 23px;
+}
+
+.card-icon {
+    width: 43px;
+    height: 43px;
+    background: #fff2e4;
+    color: #f28c28;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    font-size: 20px;
+}
+
+.card-title h3 {
+    font-size: 18px;
+}
+
+.card-title p {
+    color: #888;
+    font-size: 12px;
+    margin-top: 3px;
+}
+
+.form-group {
+    margin-bottom: 17px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 650;
+    margin-bottom: 8px;
+    color: #444;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 13px 14px;
+    border: 1px solid #e2e2e2;
+    background: #fafafa;
+    border-radius: 9px;
+    outline: none;
+    font-size: 14px;
+    transition: .2s;
+}
+
+.form-group input:focus {
+    border-color: #ff9f43;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(255,159,67,.12);
+}
+
+.form-group input::placeholder {
+    color: #aaa;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 13px;
+}
+
+.section-note {
+    color: #888;
+    font-size: 12px;
+    line-height: 1.6;
+    margin: -10px 0 20px;
+}
+
+.save-btn {
+    width: 100%;
+    padding: 14px;
+    background: #171717;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 750;
+    cursor: pointer;
+    transition: .25s;
+}
+
+.save-btn:hover {
+    background: #ff9f43;
+    color: #171717;
+    transform: translateY(-2px);
+}
+
+.save-btn:disabled {
+    opacity: .6;
+    cursor: wait;
+    transform: none;
+}
+
+.security-box {
+    background: #f8f9fa;
+    padding: 17px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+}
+
+.security-box strong {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 6px;
+}
+
+.security-box p {
+    color: #888;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 25px;
+}
+
+.btn {
+    flex: 1;
+    border: none;
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    transition: .25s;
+}
+
+.btn-home {
+    background: #171717;
+    color: white;
+}
+
+.btn-home:hover {
+    background: #333;
+}
+
+.btn-logout {
+    background: #fff0f0;
+    color: #dc4545;
+}
+
+.btn-logout:hover {
+    background: #dc4545;
+    color: white;
+}
+
+.message {
+    display: none;
+    padding: 12px 15px;
+    border-radius: 9px;
+    margin-bottom: 17px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.message.success {
+    display: block;
+    background: #e9f9ef;
+    color: #168344;
+}
+
+.message.error {
+    display: block;
+    background: #fff0f0;
+    color: #c93434;
+}
+
+footer {
+    text-align: center;
+    padding: 25px;
+    color: #999;
+    font-size: 12px;
+}
+
+@media(max-width: 650px) {
+    header {
+        padding: 0 20px;
+        height: 68px;
+    }
+
+    .logo {
+        font-size: 17px;
+    }
+
+    .header-link {
+        padding: 9px 12px;
+        font-size: 12px;
+    }
+
+    .container {
+        margin: 28px auto;
+    }
+
+    .page-title h1 {
+        font-size: 26px;
+    }
+
+    .profile-hero {
+        padding: 25px 18px;
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .avatar {
+        width: 90px;
+        height: 90px;
+        min-width: 90px;
+    }
+
+    .profile-text h2 {
+        font-size: 22px;
+    }
+
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .card {
+        padding: 22px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .buttons {
+        flex-direction: column;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">SALYUT <span>SHOP AZ</span></div>
+    <a href="/" class="header-link">← Ana səhifə</a>
+</header>
+
+<main class="container">
+
+    <div class="page-title">
+        <h1>Şəxsi kabinet</h1>
+        <p>Hesabınızı və şəxsi məlumatlarınızı buradan idarə edin.</p>
+    </div>
+
+    <section class="profile-hero">
+        <div class="avatar" id="avatar">?</div>
+
+        <div class="profile-text">
+            <h2 id="welcomeName">Yüklənir...</h2>
+            <p>SALYUT SHOP AZ müştəri hesabı</p>
+
+            <div class="status">
+                <span class="status-dot"></span>
+                Aktiv hesab
+            </div>
+        </div>
+    </section>
+
+    <div class="content-grid">
+
+        <!-- ŞƏXSİ MƏLUMATLAR -->
+        <section class="card">
+
+            <div class="card-title">
+                <div class="card-icon">👤</div>
+                <div>
+                    <h3>Şəxsi məlumatlar</h3>
+                    <p>Hesab məlumatlarınızı yeniləyin</p>
+                </div>
+            </div>
+
+            <div id="personalMessage" class="message"></div>
+
+            <form id="personalForm">
+
+                <div class="form-group">
+                    <label for="name">Ad və soyad</label>
+                    <input
+                        type="text"
+                        id="name"
+                        maxlength="100"
+                        placeholder="Adınızı və soyadınızı yazın"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="email">E-poçt ünvanı</label>
+                    <input
+                        type="email"
+                        id="email"
+                        maxlength="255"
+                        placeholder="example@gmail.com"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Telefon nömrəsi</label>
+                    <input
+                        type="tel"
+                        id="phone"
+                        maxlength="30"
+                        placeholder="+994 XX XXX XX XX"
+                    >
+                </div>
+
+                <button class="save-btn" id="personalSave" type="submit">
+                    ✓ Məlumatları yadda saxla
+                </button>
+
+            </form>
+
+        </section>
+
+        <!-- ÇATDIRILMA ÜNVANI -->
+        <section class="card">
+
+            <div class="card-title">
+                <div class="card-icon">📍</div>
+                <div>
+                    <h3>Çatdırılma ünvanı</h3>
+                    <p>Sifarişləriniz üçün ünvan məlumatları</p>
+                </div>
+            </div>
+
+            <p class="section-note">
+                Sifariş zamanı istifadə etmək üçün ünvan məlumatlarınızı qeyd edin.
+            </p>
+
+            <div id="addressMessage" class="message"></div>
+
+            <form id="addressForm">
+
+                <div class="form-group">
+                    <label for="city">Şəhər və ya rayon</label>
+                    <input
+                        type="text"
+                        id="city"
+                        maxlength="100"
+                        placeholder="Məsələn: Bakı"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="settlement">Qəsəbə və ya kənd</label>
+                    <input
+                        type="text"
+                        id="settlement"
+                        maxlength="100"
+                        placeholder="Qəsəbə və ya kənd"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="address">Küçə, bina və mənzil</label>
+                    <input
+                        type="text"
+                        id="address"
+                        maxlength="1000"
+                        placeholder="Küçə, bina, mənzil..."
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="postalCode">Poçt indeksi</label>
+                    <input
+                        type="text"
+                        id="postalCode"
+                        maxlength="20"
+                        placeholder="AZ1000"
+                    >
+                </div>
+
+                <button class="save-btn" id="addressSave" type="submit">
+                    ✓ Ünvanı yadda saxla
+                </button>
+
+            </form>
+
+        </section>
+
+    </div>
+
+    <!-- TƏHLÜKƏSİZLİK -->
+    <section class="card" style="margin-top:22px;">
+
+        <div class="card-title">
+            <div class="card-icon">🛡️</div>
+            <div>
+                <h3>Hesab təhlükəsizliyi</h3>
+                <p>Hesabınız haqqında məlumat</p>
+            </div>
+        </div>
+
+        <div class="security-box">
+            <strong>🔒 Şəxsi hesab</strong>
+            <p>Hesab məlumatlarınız yalnız öz giriş sessiyanız vasitəsilə idarə olunur.</p>
+        </div>
+
+        <div class="security-box">
+            <strong>✓ Məlumatların qorunması</strong>
+            <p>Şəxsi məlumatlarınız hesabınıza bağlı PostgreSQL bazasında saxlanılır.</p>
+        </div>
+
+    </section>
+
+    <div class="buttons">
+        <a href="/" class="btn btn-home">Ana səhifəyə qayıt</a>
+        <button class="btn btn-logout" id="logoutBtn" type="button">
+            Hesabdan çıxış et ↗
+        </button>
+    </div>
+
+</main>
+
+<footer>
+    © 2026 SALYUT SHOP AZ — Bütün hüquqlar qorunur.
+</footer>
+
+<script>
+const personalForm = document.getElementById("personalForm");
+const addressForm = document.getElementById("addressForm");
+
+let profileLoaded = false;
+
+// BİLDİRİŞ GÖSTƏR
+function showMessage(elementId, message, type) {
+    const element = document.getElementById(elementId);
+
+    element.textContent = message;
+    element.className = "message " + type;
+
+    element.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest"
+    });
+}
+
+// PROFİLİ YÜKLƏ
+async function loadProfile() {
+    try {
+        const response = await fetch("/api/profile");
+
+        if (response.status === 401) {
+            window.location.href = "/login.html";
+            return;
+        }
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            throw new Error(data.message || "Profil yüklənmədi.");
+        }
+
+        const user = data.user;
+
+        document.getElementById("name").value = user.name || "";
+        document.getElementById("email").value = user.email || "";
+        document.getElementById("phone").value = user.phone || "";
+
+        document.getElementById("city").value = user.city || "";
+        document.getElementById("settlement").value = user.settlement || "";
+        document.getElementById("address").value = user.address || "";
+        document.getElementById("postalCode").value = user.postal_code || "";
+
+        updateProfileHeader(user.name);
+
+        profileLoaded = true;
+
+    } catch (error) {
+        showMessage(
+            "personalMessage",
+            error.message || "Profil məlumatlarını yükləmək mümkün olmadı.",
+            "error"
+        );
+    }
+}
+
+// YUXARIDAKI AD VƏ AVATAR
+function updateProfileHeader(name) {
+    const cleanName = (name || "İstifadəçi").trim();
+
+    document.getElementById("welcomeName").textContent =
+        "Salam, " + cleanName + "!";
+
+    const initials = cleanName
+        .split(/\s+/)
+        .map(part => part[0])
+        .join("")
+        .substring(0, 2)
+        .toUpperCase();
+
+    document.getElementById("avatar").textContent = initials || "?";
+}
+
+// MƏLUMATLARI SERVERƏ GÖNDƏR
+async function saveProfile() {
+    const button1 = document.getElementById("personalSave");
+    const button2 = document.getElementById("addressSave");
+
+    button1.disabled = true;
+    button2.disabled = true;
+
+    button1.textContent = "Yadda saxlanılır...";
+    button2.textContent = "Yadda saxlanılır...";
+
+    const profileData = {
+        name: document.getElementById("name").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        phone: document.getElementById("phone").value.trim(),
+
+        city: document.getElementById("city").value.trim(),
+        settlement: document.getElementById("settlement").value.trim(),
+        address: document.getElementById("address").value.trim(),
+        postal_code: document.getElementById("postalCode").value.trim()
+    };
+
+    try {
+        const response = await fetch("/api/profile", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(profileData)
+        });
+
+        const data = await response.json();
+
+        if (response.status === 401) {
+            window.location.href = "/login.html";
+            return;
+        }
+
+        if (!response.ok || !data.success) {
+            throw new Error(data.message || "Məlumatları yadda saxlamaq olmadı.");
+        }
+
+        updateProfileHeader(data.user.name);
+
+        showMessage(
+            "personalMessage",
+            "✓ Bütün məlumatlar uğurla yadda saxlanıldı!",
+            "success"
+        );
+
+        showMessage(
+            "addressMessage",
+            "✓ Ünvan məlumatları da yadda saxlanıldı!",
+            "success"
+        );
+
+    } catch (error) {
+        showMessage(
+            "personalMessage",
+            error.message || "Serverlə əlaqə xətası.",
+            "error"
+        );
+    } finally {
+        button1.disabled = false;
+        button2.disabled = false;
+
+        button1.textContent = "✓ Məlumatları yadda saxla";
+        button2.textContent = "✓ Ünvanı yadda saxla";
+    }
+}
+
+// ŞƏXSİ MƏLUMATLARI YADDA SAXLA
+personalForm.addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    if (!profileLoaded) return;
+
+    await saveProfile();
+});
+
+// ÜNVANI YADDA SAXLA
+addressForm.addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    if (!profileLoaded) return;
+
+    await saveProfile();
+});
+
+// ÇIXIŞ
+document.getElementById("logoutBtn").addEventListener("click", async function() {
+    if (!confirm("Hesabdan çıxış etmək istəyirsiniz?")) {
+        return;
+    }
+
+    try {
+        const response = await fetch("/api/logout", {
+            method: "POST"
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            window.location.href = "/login.html";
+        } else {
+            alert(data.message || "Çıxış zamanı xəta baş verdi.");
+        }
+
+    } catch (error) {
+        alert("Serverlə əlaqə yaratmaq mümkün olmadı.");
+    }
+});
+
+// SƏHİFƏ AÇILANDA PROFİLİ GƏTİR
+loadProfile();
+</script>
+
+</body>
+</html>

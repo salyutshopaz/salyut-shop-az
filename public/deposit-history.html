@@ -1,0 +1,196 @@
+
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090909">
+<title>Depozit tarixçəsi | SALYUT SHOP AZ</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#090909;color:#fff;font-family:Arial,sans-serif;min-height:100vh}
+header{height:75px;padding:0 7%;display:flex;align-items:center;justify-content:space-between;background:#101010;border-bottom:1px solid #252525}
+.logo{font-size:21px;font-weight:900;color:#ff8c00}
+.back{color:#fff;text-decoration:none;border:1px solid #333;padding:11px 16px;border-radius:9px;font-size:13px}
+.container{max-width:900px;margin:50px auto;padding:0 18px}
+.heading{text-align:center;margin-bottom:35px}
+.heading .icon{width:65px;height:65px;margin:0 auto 17px;background:#2b1908;color:#ff9500;border-radius:20px;display:grid;place-items:center;font-size:30px}
+.heading h1{font-size:30px;margin-bottom:10px}
+.heading p{color:#999;font-size:14px}
+.panel{background:#121212;border:1px solid #292929;border-radius:17px;padding:24px}
+.panel-title{font-size:17px;margin-bottom:20px}
+.deposit{background:#191919;border:1px solid #303030;border-radius:13px;padding:20px;margin-bottom:13px}
+.deposit-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:17px}
+.deposit-id{color:#999;font-size:12px}
+.amount{font-size:23px;font-weight:900;color:#ff9d18}
+.details{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.detail span{display:block;color:#888;font-size:11px;margin-bottom:6px}
+.detail strong{font-size:13px;overflow-wrap:anywhere}
+.status{display:inline-block;padding:7px 11px;border-radius:20px;font-size:11px;font-weight:800}
+.pending{background:#382b12;color:#ffc45d}
+.approved{background:#12351f;color:#7ce6a0}
+.rejected{background:#381919;color:#ff9292}
+.empty,.loading,.error{text-align:center;padding:35px 15px;color:#999;font-size:14px;line-height:1.7}
+.empty .empty-icon{font-size:35px;margin-bottom:12px}
+.actions{display:flex;justify-content:center;gap:12px;margin-top:22px;flex-wrap:wrap}
+.action{display:inline-block;padding:13px 18px;border-radius:9px;text-decoration:none;font-size:13px;font-weight:800}
+.primary{background:#ff9000;color:#111}
+.secondary{border:1px solid #444;color:#fff}
+@media(max-width:550px){
+header{padding:0 15px;height:65px}
+.logo{font-size:16px}
+.container{margin:35px auto}
+.heading h1{font-size:25px}
+.panel{padding:16px}
+.deposit{padding:15px}
+.amount{font-size:20px}
+}
+</style>
+</head>
+<body>
+
+<header>
+    <div class="logo">SALYUT SHOP AZ</div>
+    <a href="/profile.html" class="back">← Profilim</a>
+</header>
+
+<main class="container">
+    <div class="heading">
+        <div class="icon">₼</div>
+        <h1>Depozit tarixçəsi</h1>
+        <p>Bütün balans artırma müraciətlərinizi buradan izləyə bilərsiniz.</p>
+    </div>
+
+    <section class="panel">
+        <h2 class="panel-title">Depozitlərim</h2>
+        <div id="history" class="loading">Tarixçə yüklənir...</div>
+    </section>
+
+    <div class="actions">
+        <a href="/deposit.html" class="action primary">+ Balans artır</a>
+        <a href="/" class="action secondary">Ana səhifə</a>
+    </div>
+</main>
+
+<script>
+const historyBox = document.getElementById("history");
+
+function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&":"&amp;",
+        "<":"&lt;",
+        ">":"&gt;",
+        '"':"&quot;",
+        "'":"&#39;"
+    })[char]);
+}
+
+function getStatus(status) {
+    const statuses = {
+        pending: {text:"Gözləyir", class:"pending"},
+        approved: {text:"Təsdiqləndi", class:"approved"},
+        rejected: {text:"Rədd edildi", class:"rejected"}
+    };
+
+    return statuses[status] || {
+        text: status || "Naməlum",
+        class: "pending"
+    };
+}
+
+function formatDate(value) {
+    if (!value) return "Tarix göstərilməyib";
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) return "Tarix göstərilməyib";
+
+    return date.toLocaleString("az-AZ", {
+        year:"numeric",
+        month:"2-digit",
+        day:"2-digit",
+        hour:"2-digit",
+        minute:"2-digit"
+    });
+}
+
+async function loadHistory() {
+    try {
+        const response = await fetch("/api/deposits", {
+            credentials:"same-origin"
+        });
+
+        const data = await response.json();
+
+        if (response.status === 401 || !data.loggedIn && response.status === 401) {
+            historyBox.innerHTML =
+                '<div class="empty">Depozit tarixçəsinə baxmaq üçün hesabınıza daxil olun.</div>';
+            return;
+        }
+
+        if (!response.ok || !data.success) {
+            throw new Error(data.message || "Tarixçə yüklənmədi.");
+        }
+
+        const deposits = data.deposits || [];
+
+        if (!deposits.length) {
+            historyBox.innerHTML = `
+                <div class="empty">
+                    <div class="empty-icon">📭</div>
+                    Hələ depozit müraciətiniz yoxdur.
+                    <div class="actions">
+                        <a href="/deposit.html" class="action primary">İlk depoziti göndər</a>
+                    </div>
+                </div>`;
+            return;
+        }
+
+        historyBox.innerHTML = deposits.map(deposit => {
+            const status = getStatus(deposit.status);
+
+            return `
+                <article class="deposit">
+                    <div class="deposit-top">
+                        <div>
+                            <div class="deposit-id">
+                                SORĞU № #${escapeHTML(deposit.id)}
+                            </div>
+                            <div class="amount">
+                                ${Number(deposit.amount || 0).toFixed(2)} AZN
+                            </div>
+                        </div>
+                        <span class="status ${status.class}">
+                            ${escapeHTML(status.text)}
+                        </span>
+                    </div>
+
+                    <div class="details">
+                        <div class="detail">
+                            <span>Göndərilmə tarixi</span>
+                            <strong>${escapeHTML(formatDate(
+                                deposit.created_at || deposit.createdAt
+                            ))}</strong>
+                        </div>
+                        <div class="detail">
+                            <span>Depozit nömrəsi</span>
+                            <strong>#${escapeHTML(deposit.id)}</strong>
+                        </div>
+                    </div>
+                </article>
+            `;
+        }).join("");
+
+    } catch (error) {
+        historyBox.innerHTML =
+            '<div class="error">' +
+            escapeHTML(error.message) +
+            '<br><br>Səhifəni yeniləyib yenidən yoxlayın.</div>';
+    }
+}
+
+loadHistory();
+</script>
+
+</body>
+</html>
