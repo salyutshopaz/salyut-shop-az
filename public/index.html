@@ -507,10 +507,13 @@
         searchCount.textContent = `Nəticə: ${products.length} məhsul`;
 
         products.forEach(product => {
-            const image = product.image &&
-                product.image.startsWith("/uploads/products/")
-                ? product.image
-                : "";
+const image = typeof product.image === "string" &&
+    (
+        product.image.startsWith("/uploads/products/") ||
+        /^https:\/\/res\.cloudinary\.com\//i.test(product.image)
+    )
+    ? product.image
+    : "";
 
             const card = document.createElement("article");
             card.className = "product-card";
