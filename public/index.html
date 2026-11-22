@@ -1,0 +1,613 @@
+
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#10131b">
+    <title>SALYUT SHOP AZ | Onlayn mağaza</title>
+    <meta name="description" content="SALYUT SHOP AZ — rahat və sürətli onlayn alış-veriş platforması.">
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .product-search {
+            width: 100%;
+            max-width: 520px;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .product-search input {
+            width: 100%;
+            padding: 17px 55px 17px 20px;
+            background: #171b26;
+            border: 1px solid #303746;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 15px;
+            outline: none;
+            transition: .2s;
+        }
+
+        .product-search input:focus {
+            border-color: #ff8a24;
+            box-shadow: 0 0 0 3px rgba(255,138,36,.12);
+        }
+
+        .product-search input::placeholder {
+            color: #89909e;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 19px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #ff922e;
+            font-size: 22px;
+            pointer-events: none;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 22px;
+            margin-top: 25px;
+        }
+
+        .product-card {
+            background: #171b26;
+            border: 1px solid #292f3d;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: .25s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            border-color: #ff8a24;
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 210px;
+            object-fit: cover;
+            display: block;
+            background: #202635;
+        }
+
+        .product-card-info {
+            padding: 17px;
+        }
+
+        .product-category {
+            color: #ff922e;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .product-card h3 {
+            color: #fff;
+            font-size: 17px;
+            margin: 10px 0;
+        }
+
+        .product-description {
+            color: #9ca4b4;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .product-price {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .product-price strong {
+            color: #ff922e;
+            font-size: 19px;
+        }
+
+        .product-old-price {
+            color: #818898;
+            text-decoration: line-through;
+            font-size: 13px;
+        }
+
+        .add-cart-btn {
+            width: 100%;
+            margin-top: 17px;
+            padding: 13px;
+            border: none;
+            border-radius: 9px;
+            background: #ff922e;
+            color: #111;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .add-cart-btn:hover {
+            background: #ffab52;
+        }
+
+        .cart-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            margin-left: 5px;
+            border-radius: 20px;
+            background: #ff922e;
+            color: #111;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .search-message {
+            color: #aeb5c3;
+            padding: 25px 0;
+            text-align: center;
+            grid-column: 1 / -1;
+        }
+
+        .search-count {
+            color: #929aaa;
+            font-size: 13px;
+            margin-top: 12px;
+        }
+
+        .cart-toast {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            z-index: 9999;
+            background: #202a24;
+            color: #fff;
+            border: 1px solid #3c704d;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 8px 30px #0005;
+            opacity: 0;
+            transform: translateY(15px);
+            pointer-events: none;
+            transition: .25s;
+        }
+
+        .cart-toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media(max-width: 600px) {
+            .products-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 12px;
+            }
+
+            .product-card img {
+                height: 145px;
+            }
+
+            .product-card-info {
+                padding: 12px;
+            }
+
+            .product-card h3 {
+                font-size: 14px;
+            }
+
+            .product-price strong {
+                font-size: 16px;
+            }
+
+            .add-cart-btn {
+                font-size: 12px;
+                padding: 11px 5px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+    <a href="/" class="logo">SALYUT <span>SHOP AZ</span></a>
+
+    <div class="header-right">
+        <span class="header-label">ONLAYN MAĞAZA</span>
+        <button class="menu-btn" id="menuBtn" aria-label="Menyunu aç">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </div>
+</header>
+
+<div class="menu-overlay" id="menuOverlay"></div>
+
+<aside class="side-menu" id="sideMenu">
+    <div class="menu-header">
+        <div>
+            <span class="menu-small">SALYUT SHOP AZ</span>
+            <h2>MENYU</h2>
+        </div>
+        <button id="closeMenu" aria-label="Menyunu bağla">×</button>
+    </div>
+
+    <nav class="menu-links">
+        <div class="menu-balance" id="menuBalance" hidden>
+    <span>MƏNİM BALANSIM</span>
+    <strong id="menuBalanceAmount">0.00 AZN</strong>
+    <a href="/deposit.html">💳 Balans artır</a>
+</div>
+        <a href="/" class="menu-home">⌂ <span>Ana səhifə</span></a>
+        <a href="/#products">▦ <span>Məhsullar</span></a>
+        <a href="/login.html" id="loginLink">↪ <span>Giriş</span></a>
+        <a href="/register.html" id="registerLink">＋ <span>Qeydiyyat</span></a>
+        <a href="/profile.html" id="profileLink" hidden>👤 <span>Profilim</span></a>
+        <a href="/cart.html" id="cartLink">🛒 <span>Səbətim</span><span class="cart-badge" id="cartCount">0</span></a>
+        <a href="/orders.html" id="ordersLink">▤ <span>Sifarişlərim</span></a>
+        <a href="/#about">ⓘ <span>Haqqımızda</span></a>
+    </nav>
+
+    <div class="menu-bottom">
+        <div class="menu-status"><span></span> Platforma aktivdir</div>
+        <p>© 2026 SALYUT SHOP AZ</p>
+    </div>
+</aside>
+
+<main>
+    <section class="hero">
+        <div class="hero-glow glow-one"></div>
+        <div class="hero-glow glow-two"></div>
+
+        <div class="hero-content">
+            <div class="hero-tag">
+                <span></span> SALYUT SHOP AZ-Ə XOŞ GƏLMİSİNİZ
+            </div>
+
+            <h1>ALIŞ-VERİŞİN<br><span>YENİ ÜNVANI.</span></h1>
+
+            <p>
+                Seçdiyiniz məhsulları rahatlıqla kəşf edin.
+                Sifarişlərinizi bir neçə addımda tamamlayın.
+            </p>
+<div class="home-balance" id="homeBalance" hidden>
+    <span>HESABINIZIN BALANSI</span>
+    <strong id="homeBalanceAmount">0.00 AZN</strong>
+    <a href="/deposit.html">+ Balans artır</a>
+</div>
+            <div class="hero-actions">
+                <a href="#products" class="main-button">Məhsullara bax <span>→</span></a>
+                <a href="/profile.html" class="secondary-button" id="heroProfileLink" hidden>
+                    Şəxsi kabinetim
+                </a>
+            </div>
+
+            <div class="hero-trust">
+                <div><strong>01</strong><span>Rahat seçim</span></div>
+                <div><strong>02</strong><span>Sadə sifariş</span></div>
+                <div><strong>03</strong><span>İstifadəçi kabineti</span></div>
+            </div>
+        </div>
+
+        <div class="hero-visual" aria-hidden="true">
+            <div class="visual-circle circle-back"></div>
+            <div class="visual-circle circle-front"></div>
+            <div class="visual-card">
+                <div class="visual-card-top">
+                    <span class="visual-dot"></span>
+                    <span>SALYUT SHOP AZ</span>
+                </div>
+                <div class="visual-bag">🛍️</div>
+                <div class="visual-card-title">Sənin alış-verişin.</div>
+                <div class="visual-card-subtitle">Bir platformada, rahat və sadə.</div>
+                <div class="visual-line"></div>
+                <div class="visual-card-bottom">
+                    <span>ONLINE STORE</span>
+                    <span>2026</span>
+                </div>
+            </div>
+            <div class="floating-chip chip-top">✦ Rahat alış-veriş</div>
+            <div class="floating-chip chip-bottom">✓ Sadə sifariş prosesi</div>
+        </div>
+    </section>
+
+    <section class="benefits">
+        <div class="benefit">
+            <div class="benefit-icon">🛍️</div>
+            <div><h3>Rahat seçim</h3><p>Məhsullara asan baxış</p></div>
+        </div>
+        <div class="benefit">
+            <div class="benefit-icon">⚡</div>
+            <div><h3>Sürətli sifariş</h3><p>Sadə sifariş prosesi</p></div>
+        </div>
+        <div class="benefit">
+            <div class="benefit-icon">👤</div>
+            <div><h3>Şəxsi kabinet</h3><p>Məlumatlarınızı idarə edin</p></div>
+        </div>
+    </section>
+
+    <section id="products" class="products">
+        <div class="section-heading">
+            <div>
+                <span class="section-kicker">KATALOQ</span>
+                <h2>Məhsullarımız</h2>
+                <p>İstədiyiniz məhsulu axtarın və kəşf edin.</p>
+            </div>
+            <span class="section-number">01 / 03</span>
+        </div>
+
+        <div class="product-search">
+            <input
+                type="search"
+                id="productSearch"
+                placeholder="Məhsulun adını və ya kateqoriyasını yazın..."
+                autocomplete="off"
+            >
+            <span class="search-icon">⌕</span>
+        </div>
+
+        <div class="search-count" id="searchCount"></div>
+
+        <div class="products-grid" id="productsGrid">
+            <div class="search-message">Məhsullar yüklənir...</div>
+        </div>
+    </section>
+
+    <section class="about" id="about">
+        <div class="about-mark">S</div>
+        <div class="about-content">
+            <span class="section-kicker">BİZ KİMİK?</span>
+            <h2>Alış-verişi daha<br><span>rahat edirik.</span></h2>
+            <p>
+                SALYUT SHOP AZ müştərilərə rahat məhsul seçimi,
+                sadə sifariş prosesi və şəxsi hesab imkanları təqdim
+                etmək üçün yaradılmış onlayn mağaza platformasıdır.
+            </p>
+            <a href="/register.html" class="about-link" id="aboutRegisterLink">
+                Hesab yarat <span>→</span>
+            </a>
+        </div>
+    </section>
+</main>
+
+<div class="cart-toast" id="cartToast">✓ Məhsul səbətə əlavə edildi!</div>
+
+<footer class="footer">
+    <a href="/" class="logo">SALYUT <span>SHOP AZ</span></a>
+    <p>© 2026 SALYUT SHOP AZ. Bütün hüquqlar qorunur.</p>
+    <a href="#top" class="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">Yuxarı ↑</a>
+</footer>
+
+<script src="script.js"></script>
+
+<script>
+    const CART_KEY = "salyut_cart";
+
+    function getCart() {
+        try {
+            const cart = JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+            return Array.isArray(cart) ? cart : [];
+        } catch {
+            return [];
+        }
+    }
+
+    function saveCart(cart) {
+        localStorage.setItem(CART_KEY, JSON.stringify(cart));
+        updateCartCount();
+    }
+
+    function updateCartCount() {
+        const count = getCart().reduce((sum, item) => {
+            const quantity = Number(item.quantity);
+            return sum + (Number.isInteger(quantity) && quantity > 0 ? quantity : 0);
+        }, 0);
+
+        document.getElementById("cartCount").textContent = count;
+    }
+
+    function addToCart(productId) {
+        const product = allProducts.find(p => Number(p.id) === Number(productId));
+        if (!product) return;
+
+        const cart = getCart();
+        const existing = cart.find(item => Number(item.id) === Number(product.id));
+
+        if (existing) {
+            existing.quantity = Number(existing.quantity) + 1;
+        } else {
+            cart.push({
+                id: Number(product.id),
+                title: product.title,
+                price: Number(product.price),
+                image: product.image || "",
+                quantity: 1
+            });
+        }
+
+        saveCart(cart);
+
+        const toast = document.getElementById("cartToast");
+        toast.classList.add("show");
+
+        setTimeout(() => toast.classList.remove("show"), 2000);
+    }
+
+    // İSTİFADƏÇİ PROFİL LİNKLƏRİ
+    async function updateProfileLinks() {
+        const profileLink = document.getElementById("profileLink");
+        const heroProfileLink = document.getElementById("heroProfileLink");
+        const loginLink = document.getElementById("loginLink");
+        const registerLink = document.getElementById("registerLink");
+        const aboutRegisterLink = document.getElementById("aboutRegisterLink");
+
+        try {
+            const response = await fetch("/api/me");
+
+            if (!response.ok) return;
+
+            const data = await response.json();
+            const loggedIn = data.loggedIn === true;
+
+            profileLink.hidden = !loggedIn;
+            heroProfileLink.hidden = !loggedIn;
+            loginLink.hidden = loggedIn;
+            registerLink.hidden = loggedIn;
+            aboutRegisterLink.hidden = loggedIn;
+
+        } catch (error) {
+            console.error("İstifadəçi məlumatı alınmadı:", error);
+        }
+    }
+
+    updateProfileLinks();
+
+    // MƏHSULLAR VƏ AXTARIŞ
+    const productsGrid = document.getElementById("productsGrid");
+    const productSearch = document.getElementById("productSearch");
+    const searchCount = document.getElementById("searchCount");
+
+    let allProducts = [];
+
+    function escapeHTML(value) {
+        return String(value ?? "").replace(/[&<>"']/g, char => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#039;"
+        })[char]);
+    }
+
+    function renderProducts(products) {
+        productsGrid.innerHTML = "";
+
+        if (!products.length) {
+            productsGrid.innerHTML = `
+                <div class="search-message">
+                    <h3>Məhsul tapılmadı</h3>
+                    <p>Başqa məhsul adı ilə axtarış edin.</p>
+                </div>
+            `;
+
+            searchCount.textContent = "Nəticə: 0 məhsul";
+            return;
+        }
+
+        searchCount.textContent = `Nəticə: ${products.length} məhsul`;
+
+        products.forEach(product => {
+            const image = product.image &&
+                product.image.startsWith("/uploads/products/")
+                ? product.image
+                : "";
+
+            const card = document.createElement("article");
+            card.className = "product-card";
+
+            card.innerHTML = `
+                <img
+                    src="${escapeHTML(image || "/product-placeholder.png")}"
+                    alt="${escapeHTML(product.title)}"
+                    loading="lazy"
+                    onerror="this.style.display='none'"
+                >
+
+                <div class="product-card-info">
+                    <span class="product-category">
+                        ${escapeHTML(product.category || "Məhsul")}
+                    </span>
+
+                    <h3>${escapeHTML(product.title)}</h3>
+
+                    <p class="product-description">
+                        ${escapeHTML(product.description || "")}
+                    </p>
+
+                    <div class="product-price">
+                        <strong>${Number(product.price).toFixed(2)} AZN</strong>
+
+                        ${
+                            product.old_price &&
+                            Number(product.old_price) > Number(product.price)
+                            ? `<span class="product-old-price">${Number(product.old_price).toFixed(2)} AZN</span>`
+                            : ""
+                        }
+                    </div>
+
+                    <button
+                        class="add-cart-btn"
+                        onclick="addToCart(${Number(product.id)})">
+                        🛒 Səbətə əlavə et
+                    </button>
+                </div>
+            `;
+
+            productsGrid.appendChild(card);
+        });
+    }
+
+    function searchProducts() {
+        const query = productSearch.value.trim().toLocaleLowerCase("az");
+
+        const filtered = allProducts.filter(product => {
+            const title = String(product.title || "").toLocaleLowerCase("az");
+            const category = String(product.category || "").toLocaleLowerCase("az");
+            const description = String(product.description || "").toLocaleLowerCase("az");
+
+            return title.includes(query) ||
+                   category.includes(query) ||
+                   description.includes(query);
+        });
+
+        renderProducts(filtered);
+    }
+
+    async function loadProducts() {
+        try {
+            const response = await fetch("/api/products");
+
+            if (!response.ok) {
+                throw new Error("Məhsulları yükləmək mümkün olmadı.");
+            }
+
+            const data = await response.json();
+
+            if (!data.success || !Array.isArray(data.products)) {
+                throw new Error("Məhsul məlumatları düzgün deyil.");
+            }
+
+            allProducts = data.products;
+            searchProducts();
+
+        } catch (error) {
+            console.error("Məhsul xətası:", error);
+
+            productsGrid.innerHTML = `
+                <div class="search-message">
+                    Məhsulları yükləmək mümkün olmadı. Səhifəni yeniləyin.
+                </div>
+            `;
+
+            searchCount.textContent = "";
+        }
+    }
+
+    productSearch.addEventListener("input", searchProducts);
+
+    updateCartCount();
+    loadProducts();
+</script>
+
+</body>
+</html>
