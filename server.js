@@ -44,7 +44,15 @@ fs.mkdirSync(uploadDirectory, { recursive: true });
 // ==================================================
 // MIDDLEWARE
 // ==================================================
-
+app.get("/robots.txt", (req, res) => {
+    res.type("text/plain");
+    res.set("Cache-Control", "no-cache");
+    res.send(
+        "User-agent: *\n" +
+        "Allow: /\n\n" +
+        "Sitemap: https://salyut-shop-az.onrender.com/sitemap.xml\n"
+    );
+});
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: true }));
 
